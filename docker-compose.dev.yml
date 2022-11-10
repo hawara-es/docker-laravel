@@ -5,11 +5,6 @@ services:
             context: ./docker-images/alpine
             dockerfile: Dockerfile
             target: dev
-    artisan:
-        build:
-            context: ./docker-images/alpine
-            dockerfile: Dockerfile
-            target: dev
     mysql:
         ports:
             - 3306:3306

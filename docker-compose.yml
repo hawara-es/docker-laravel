@@ -13,9 +13,24 @@ services:
         networks:
             - laravel
         restart: always
+        stdin_open: true
+        tty: true
         volumes:
             - laravel:/var/www/html
             - ./.env:/var/www/html/.env
+        working_dir: /var/www/html
+    cron:
+        build:
+            context: ./docker-images/alpine
+            dockerfile: Dockerfile
+            target: cron
+        networks:
+            - laravel
+        restart: always
+        stdin_open: true
+        tty: true
+        volumes:
+            - laravel:/var/www/html
         working_dir: /var/www/html
     nginx:
         build:

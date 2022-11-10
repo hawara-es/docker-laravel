@@ -37,9 +37,14 @@ RUN adduser -g ${USER} -s /bin/sh -D ${GROUP}
 RUN echo "rm -rf /var/cache/apk/* /tmp/* /usr/share/man /usr/local/lib/php/doc/*" > /opt/remove-unnecessary-files && \
     chmod +x /opt/remove-unnecessary-files
 
+# Working directory
+WORKDIR /var/www/html
+RUN chown $USER:$GROUP /var/www/html
+
 ## PHP 8.1, FPM and extensions
 COPY php-fpm/global.conf /etc/php81/php-fpm.conf
 COPY php-fpm/www.conf /etc/php81/php-fpm.d/www.conf
+
 RUN apk add --no-cache \
         tzdata fcgi openrc tini curl icu-data-full lynx \
         php81 php81-fpm \
@@ -54,19 +59,11 @@ RUN apk add --no-cache \
     ln -s /usr/bin/php81 /usr/bin/php && \
     /opt/remove-unnecessary-files
 
-## Set the cron for Laravel schedule
-RUN echo '* * * * * /usr/bin/php /var/www/html/artisan schedule:run >> /dev/null 2>&1' > /etc/crontabs/root
-
 ## Set the system and PHP time zones
 ENV TZ=$timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "[PHP]" > /etc/php81/conf.d/tzone.ini && \
     echo "date.timezone = \"$TZ\"" >> /etc/php81/conf.d/tzone.ini
-
-## FPM Health Check
-RUN wget -O /usr/local/bin/php-fpm-healthcheck \
-    https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck && \
-    chmod +x /usr/local/bin/php-fpm-healthcheck
 
 ## Composer
 RUN curl -sS https://getcomposer.org/installer | \
@@ -81,10 +78,6 @@ RUN apk add --no-cache git && \
     /opt/remove-unnecessary-files
 
 ## Application
-WORKDIR /var/www/html
-
-RUN chown $USER:$GROUP /var/www/html
-
 USER $USER
 
 RUN if [ "$install_method" = "composer" ]; then \
@@ -96,10 +89,33 @@ RUN if [ "$install_method" = "composer_repo" ]; then \
 RUN if [ "$install_method" = "git" ]; then \
     git clone $install_from_git .; fi
 
-RUN mkdir -p /var/www/html/storage/logs/ && \
-    touch /var/www/html/storage/logs/php-fpm.log
+USER root
+
+## FPM Health Check
+RUN wget -O /usr/local/bin/php-fpm-healthcheck \
+    https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck && \
+    chmod +x /usr/local/bin/php-fpm-healthcheck
+
+## Laravel schedule
+RUN echo "*/1	*	*	*	*	run-parts /etc/periodic/1min" >> /etc/crontabs/root
+RUN mkdir -p /etc/periodic/1min/
+RUN echo '#!'"/bin/sh" > /etc/periodic/1min/schedule && \
+    echo "/usr/bin/php /var/www/html/artisan schedule:run" >> /etc/periodic/1min/schedule && \
+    chmod a+x /etc/periodic/1min/schedule
+
+## Logs redirected to containers standard output
+USER $USER
+
+RUN mkdir -p /var/www/html/storage/logs/
+RUN ln -sf /dev/stdout /var/www/html/storage/logs/cron.log
+RUN ln -sf /dev/stdout /var/www/html/storage/logs/php-fpm.log
 
 USER root
+
+## Cron
+FROM prod as cron
+
+CMD [ "crond", "-l", "2", "-f" ]
 
 FROM prod as sqlserver
 
@@ -126,13 +142,11 @@ RUN apk add --no-cache supervisor && \
 FROM prod as dev
 
 ## Mailhog
-RUN echo 'sendmail_path = /usr/sbin/sendmail -S mailhog:1025' > \
+RUN echo "sendmail_path = /usr/sbin/sendmail -S mailhog:1025" > \
     /etc/php81/conf.d/mailhog.ini
 
 ## XDebug config
 COPY php-fpm/xdebug.ini /etc/php81/conf.d/50_xdebug.ini
-RUN mkdir -p /var/www/html/storage/logs/ && \
-    touch /var/www/html/storage/logs/xdebug.log && \
-    chown -R laravel: /var/www/html/storage/logs/ && \
-    apk add --no-cache php81-xdebug && \
+RUN ln -sf /dev/stdout /var/www/html/storage/logs/xdebug.log
+RUN apk add --no-cache php81-xdebug && \
     /opt/remove-unnecessary-files
