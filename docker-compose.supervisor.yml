@@ -1,0 +1,21 @@
+version: '3'
+services:
+    supervisor:
+        build:
+            context: ./docker-images/alpine
+            dockerfile: Dockerfile
+            target: supervisor
+        restart: always
+        tty: true
+        entrypoint: ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/supervisord.conf"]
+        environment:
+            QUEUE_CONNECTION:
+            QUEUE_NAME:
+            MEMORY_LIMIT: "1024"
+        volumes:
+            - ./:/var/www/html
+        networks:
+            - laravel
+networks:
+    laravel:
+        driver: bridge

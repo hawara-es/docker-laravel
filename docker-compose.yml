@@ -1,0 +1,44 @@
+version: '3'
+services:
+    php:
+        build:
+            context: ./docker-images/alpine
+            dockerfile: Dockerfile
+            target: prod
+        depends_on:
+            - mysql
+        entrypoint: ["php-fpm", "-R", "-F"]
+        healthcheck:
+            retries: 3
+            test: php-fpm-healthcheck || exit 1
+            timeout: 3s
+        networks:
+            - laravel
+        restart: always
+        volumes:
+            - laravel:/var/www/html
+            - ./.env:/var/www/html/.env
+        working_dir: /var/www/html
+    nginx:
+        build:
+            context: ./docker-images/nginx
+            dockerfile: basic.Dockerfile
+        depends_on:
+            - php
+        healthcheck:
+            retries: 3
+            test: curl -f ${APP_URL} -u ${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD} || exit 1
+            timeout: 3s
+        networks:
+            - laravel
+        ports:
+            - 80:80
+        restart: always
+        volumes:
+            - laravel:/var/www/html
+        working_dir: /var/www/html
+networks:
+    laravel:
+        driver: bridge
+volumes:
+    laravel:

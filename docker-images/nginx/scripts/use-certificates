@@ -1,0 +1,18 @@
+#!/bin/sh
+
+CERTS_DIRECTORY=/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN}
+
+if [[ ! -d "$CERTS_DIRECTORY" ]]
+then
+    echo "The certificates folder doesn't exist yet."
+    echo "If you still want to continue, try creating the certificates first."
+    echo "> create-certificates"
+    exit 1
+fi
+
+rm /etc/nginx/conf.d/basic.conf
+
+ln -s /etc/nginx/conf.templates/letsencrypt.conf \
+  /etc/nginx/conf.d/letsencrypt.conf
+
+nginx -s reload

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+CERTS_DIRECTORY=/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN}
+
+if [[ -d "$CERTS_DIRECTORY" ]]
+then
+    echo "The certificates already exist."
+    echo "If you still want to continue, remove them first."
+    echo "> rm -rf $CERTS_DIRECTORY/*"
+    exit 1
+fi
+
+certbot -n --agree-tos \
+    --email $LETSENCRYPT_EMAIL \
+    --nginx \
+    -d $LETSENCRYPT_DOMAIN \
+    -d www.$LETSENCRYPT_DOMAIN
+
+use-certificates

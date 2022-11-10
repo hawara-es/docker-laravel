@@ -1,0 +1,44 @@
+#!/bin/bash
+
+generate_random_password() {
+    < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
+}
+
+add_service() {
+    if [ $service = "$1" ]; then
+        echo -e "  -f docker-compose.$1.yml \\" >> docker-laravel
+    fi
+}
+
+if [ -f ".env" ] || [ -f "docker-laravel" ]; then
+    echo "Nothing was done, as either a .env or a docker-laravel file already exists"
+else
+    # Create the `docker-laravel` file
+
+    echo "#!/bin/bash" > docker-laravel
+    echo "docker-compose -f docker-compose.yml \\" >> docker-laravel
+
+    for service in "$@"
+    do
+        add_service $service
+    done
+
+    echo "  \"\$@\"" >> docker-laravel
+
+    chmod +x docker-laravel
+
+    # Create the `.env` file
+
+    echo "APP_URL=http://localhost" > .env
+    echo "APP_KEY=" >> .env
+    echo "" >> .env
+    echo "BASIC_AUTH_USERNAME=" >> .env
+    echo "BASIC_AUTH_PASSWORD=`generate_random_password`" >> .env
+    echo "" >> .env
+    echo "MYSQL_ROOT_PASSWORD=`generate_random_password`" >> .env
+    echo "" >> .env
+    echo "DB_ROOT_PASSWORD=\$MYSQL_ROOT_PASSWORD" >> .env
+    echo "DB_DATABASE=laravel" >> .env
+    echo "DB_USERNAME=laravel" >> .env
+    echo "DB_PASSWORD=`generate_random_password`" >> .env
+fi

@@ -1,0 +1,4 @@
+#!/bin/bash
+if [ -f "docker-laravel" ]; then
+    ./docker-laravel run --rm --entrypoint="php artisan" php "$@"
+fi

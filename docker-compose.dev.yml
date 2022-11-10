@@ -1,0 +1,25 @@
+version: '3'
+services:
+    php:
+        build:
+            context: ./docker-images/alpine
+            dockerfile: Dockerfile
+            target: dev
+    artisan:
+        build:
+            context: ./docker-images/alpine
+            dockerfile: Dockerfile
+            target: dev
+    mysql:
+        ports:
+            - 3306:3306
+    mailhog:
+        image: 'mailhog/mailhog:latest'
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - laravel
+networks:
+    laravel:
+        driver: bridge
