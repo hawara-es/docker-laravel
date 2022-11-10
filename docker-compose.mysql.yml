@@ -1,5 +1,8 @@
 version: '3'
 services:
+    php:
+        depends_on:
+            - mysql
     mysql:
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
@@ -8,7 +11,7 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
         healthcheck:
             retries: 3
-            test: mysqladmin ping -u$$DB_PASSWORD -p$$DB_PASSWORD
+            test: mysqladmin ping -u$$DB_USERNAME -p$$DB_PASSWORD
             timeout: 3s
         image: mysql:8.0
         restart: always

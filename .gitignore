@@ -1,2 +1,3 @@
-.env
-docker-laravel
+/.env
+/docker-laravel
+/application

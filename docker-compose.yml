@@ -5,8 +5,6 @@ services:
             context: ./docker-images/alpine
             dockerfile: Dockerfile
             target: prod
-        depends_on:
-            - mysql
         entrypoint: ["php-fpm", "-R", "-F"]
         healthcheck:
             retries: 3

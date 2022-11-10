@@ -88,16 +88,16 @@ RUN chown $USER:$GROUP /var/www/html
 USER $USER
 
 RUN if [ "$install_method" = "composer" ]; then \
-    composer create-project $install_from_composer /var/www/html; fi
+    composer create-project $install_from_composer .; fi
 
 RUN if [ "$install_method" = "composer_repo" ]; then \
-    composer create-project --repository-url $install_from_composer_repo /var/www/html; fi
+    composer create-project --repository-url $install_from_composer_repo .; fi
 
 RUN if [ "$install_method" = "git" ]; then \
-    git clone $install_from_git /var/www/html; fi
+    git clone $install_from_git .; fi
 
 RUN mkdir -p /var/www/html/storage/logs/ && \
-    touch /var/www/html/storage/logs/xdebug.log
+    touch /var/www/html/storage/logs/php-fpm.log
 
 USER root
 
