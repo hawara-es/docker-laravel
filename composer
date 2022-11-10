@@ -1,0 +1,4 @@
+#!/bin/bash
+if [ -f "docker-laravel" ]; then
+    ./docker-laravel exec php composer "$@"
+fi
