@@ -1,4 +1,4 @@
 #!/bin/bash
 if [ -f "docker-laravel" ]; then
-    ./docker-laravel run --rm --entrypoint="sh" $1
+    ./docker-laravel exec $1 sh
 fi
