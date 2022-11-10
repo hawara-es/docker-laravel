@@ -91,6 +91,16 @@ Finally, you can now start your services.
 ./docker-laravel up -d
 ```
 
+### Check the Services
+
+This repository implements health checks for MySQL, Nginx and PHP FPM. If you run a `ps` in Docker, you should see each service status.
+
+```bash
+./docker-laravel ps
+```
+
+![List of for containers Cron, MySQL, Nginx and PHP running in a healthy state](./docker-images/containers_screenshot.png)
+
 ## How to Use
 
 ### Run `artisan` Commands
