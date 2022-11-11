@@ -1,3 +1,5 @@
+/volumes/application/*
+/volumes/letsencrypt/*
 /.env
 /docker-laravel
 /application

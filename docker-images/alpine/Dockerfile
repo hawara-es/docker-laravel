@@ -103,15 +103,6 @@ RUN echo '#!'"/bin/sh" > /etc/periodic/1min/schedule && \
     echo "/usr/bin/php /var/www/html/artisan schedule:run" >> /etc/periodic/1min/schedule && \
     chmod a+x /etc/periodic/1min/schedule
 
-## Logs redirected to containers standard output
-USER $USER
-
-RUN mkdir -p /var/www/html/storage/logs/
-RUN ln -sf /dev/stdout /var/www/html/storage/logs/cron.log
-RUN ln -sf /dev/stdout /var/www/html/storage/logs/php-fpm.log
-
-USER root
-
 ## Cron
 FROM prod as cron
 
@@ -147,6 +138,5 @@ RUN echo "sendmail_path = /usr/sbin/sendmail -S mailhog:1025" > \
 
 ## XDebug config
 COPY php-fpm/xdebug.ini /etc/php81/conf.d/50_xdebug.ini
-RUN ln -sf /dev/stdout /var/www/html/storage/logs/xdebug.log
 RUN apk add --no-cache php81-xdebug && \
     /opt/remove-unnecessary-files

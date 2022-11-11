@@ -26,16 +26,25 @@ Once you have the repository, use the `create-environment` script to create:
 Call the script by running `./create-environment` from the terminal followed by the names of the services separated by spaces.
 
 ```bash
-./create-environment mysql redis dev
+./create-environment mysql
 ```
 
 Available services are:
 
-- `dev`: enables XDebug and MailHog,
 - `letsencrypt`: installs Let's Encrypt `certbot` utility to facilitate serving the application through HTTPS,
 - `mysql`: runs a MySQL database server,
 - `redis`: runs a Redis server,
 - `supervisor`: runs a Supervisor instance checking Laravel's queues.
+
+Also, this features are available:
+
+- `dev`: enables XDebug and opens MySQL port to the host,
+- `mailhog`: enables a MailHog email catcher,
+
+Finally, you can choose how your volumes will be handled:
+
+- `volume-on-container`: keeps the volumes in the containers,
+- `volume-on-host`: uses volumes shared with the host.
 
 #### Environment Variables
 
@@ -57,8 +66,8 @@ In other words, the build process would be executed as if `install_method` was s
 
 ```bash
 ./docker-laravel build \
-    --build_args install_method=composer \
-    --build_args install_from_composer=laravel/laravel
+    --build-arg install_method=composer \
+    --build-arg install_from_composer=laravel/laravel
 ```
 
 You can change `laravel/laravel` to be the source of your custom Laravel application. Just check that it's a publicly available Composer package.
@@ -69,8 +78,8 @@ If your application is a Composer package but it isn't in Packagist, use the **c
 
 ```bash
 ./docker-laravel build \
-    --build_args install_method=composer_repo \
-    --build_args install_from_composer_repo=https://github.com/laravel/laravel
+    --build-arg install_method=composer_repo \
+    --build-arg install_from_composer_repo=https://github.com/laravel/laravel
 ```
 
 #### Install from a Custom Git Repository
@@ -79,13 +88,48 @@ Alternativelly, you can tell the installer to use the **git** installation metho
 
 ```bash
 ./docker-laravel build \
-    --build_args install_method=git \
-    --build_args install_from_git=https://github.com/laravel/laravel
+    --build-arg install_method=git \
+    --build-arg install_from_git=https://github.com/laravel/laravel
 ```
 
-### Start
+#### Manuall Install
 
-Finally, you can now start your services.
+Ultimately, you can delay the installation to make it happen manually by using the `manual` installation method.
+
+```bash
+./docker-laravel build \
+    --build-arg install_method=manual
+```
+
+If you do so, you will very likely want to use the `volume-on-host` service when creating your environment. That will mount the `volumes/application` folder as your container's web root.
+
+Make sure to place your application so it has a `public` folder, as the web server is configured to publish it. At this point, to continue with the installation, we'll start the containers.
+
+```bash
+./docker-laravel up -d
+```
+
+Temporarily, our web server container may report unhealthy. That's just because we still don't have anything in the web root.
+
+As an example, let's install a clean new Laravel manually:
+
+```sh
+# 1) Create the project in a new folder (here `download`)
+./composer create-project laravel/laravel download/
+
+# 2) Open a shell in the PHP container
+./shell php
+
+# 3) Move the files and leave things clean
+cp -R download/* . && rm -rf download/
+
+# 4) Generate the application keys
+./artisan key:generate
+```
+
+### Start the Services
+
+If you are following this guide but you are not doing a manual installation, you may want to start your containers. That will make your application available.
 
 ```bash
 ./docker-laravel up -d

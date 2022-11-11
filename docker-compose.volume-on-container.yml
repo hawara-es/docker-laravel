@@ -1,0 +1,13 @@
+version: '3'
+services:
+    php:
+        volumes:
+            - laravel:/var/www/html
+    cron:
+        volumes:
+            - laravel:/var/www/html
+    nginx:
+        volumes:
+            - laravel:/var/www/html
+volumes:
+    laravel:

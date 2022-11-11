@@ -1,17 +1,13 @@
-#!/usr/bin/env sh
+#!/bin/sh
+
+services="$@"
 
 generate_random_password() {
     < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
 }
 
 add_service() {
-    if [ $service = "$1" ]; then
-        echo -e "  -f docker-compose.$1.yml \\" >> docker-laravel
-    fi
-
-    if [ $service = "volume-on-host" ]; then
-        mkdir -p application
-    fi
+    echo "  -f docker-compose.$1.yml \\" >> docker-laravel
 }
 
 if [ -f ".env" ] || [ -f "docker-laravel" ]; then
@@ -22,12 +18,19 @@ else
     echo "#!/usr/bin/env sh" > docker-laravel
     echo "docker-compose -f docker-compose.yml \\" >> docker-laravel
 
-    for service in "$@"
+    case "$services" in
+        *"volume-on-host"*) add_service "volume-on-host" ;;
+        *) add_service "volume-on-container" ;;
+    esac
+
+    for service in $services
     do
-        add_service $service
+        if [ ! "$service" = "volume-on-host" ] && [ ! "$service" = "volume-on-container" ]; then
+            add_service $service
+        fi
     done
 
-    echo "  \"\$@\"" >> docker-laravel
+    echo "\"\$@\"" >> docker-laravel
 
     chmod +x docker-laravel
 
