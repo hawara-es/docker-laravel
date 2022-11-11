@@ -1,4 +1,4 @@
 #!/bin/bash
 if [ -f "docker-laravel" ]; then
-    ./docker-laravel exec php php artisan "$@"
+    ./docker-laravel exec -u laravel php php artisan "$@"
 fi

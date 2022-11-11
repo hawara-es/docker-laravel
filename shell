@@ -1,4 +1,4 @@
 #!/bin/bash
 if [ -f "docker-laravel" ]; then
-    ./docker-laravel exec $1 sh
+    ./docker-laravel exec -u laravel $1 sh
 fi
