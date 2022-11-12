@@ -1,5 +1,8 @@
-/volumes/application/*
-/volumes/letsencrypt/*
 /.env
 /docker-laravel
-/application
+
+/volumes/application/*
+!/volumes/application/.gitkeep
+
+/volumes/letsencrypt/*
+!/volumes/letsencrypt/.gitkeep
