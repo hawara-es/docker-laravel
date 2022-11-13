@@ -46,6 +46,17 @@ Finally, you can choose how your volumes will be handled:
 - `volume-on-container`: keeps the volumes in the containers,
 - `volume-on-host`: uses volumes shared with the host.
 
+#### Service Versions
+
+| Service | Version |
+| --- | --- |
+| PHP | 8.1 |
+| Alpine | 3.16 |
+| Nginx | 1.22 |
+| MySQL | 8.0 |
+| MariaDB | 10.8 |
+| Redis | 7.0 |
+
 #### Environment Variables
 
 When you created the environment, a new `.env` file was created with some random passwords. The file is as basic as possible, so you must check it and complete it with all the variables that your Laravel application needs.
