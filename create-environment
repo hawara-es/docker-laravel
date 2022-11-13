@@ -46,4 +46,23 @@ else
     echo "DB_USERNAME=laravel" >> .env
     echo "DB_PASSWORD=`generate_random_password`" >> .env
     echo "DB_ROOT_PASSWORD=`generate_random_password`" >> .env
+
+    for service in $services
+    do
+        if [ "$service" = "redis" ]; then
+            echo "" >> .env
+            echo "QUEUE_CONNECTION=redis" >> .env
+            echo "REDIS_HOST=redis" >> .env
+            echo "REDIS_PASSWORD=`generate_random_password`" >> .env
+            echo "REDIS_PORT=6379" >> .env
+        fi
+
+        if [ "$service" = "mailhog" ]; then
+            echo "" >> .env
+            echo "MAIL_MAILER=smtp" >> .env
+            echo "MAIL_HOST=mailhog" >> .env
+            echo "MAIL_PORT=1025" >> .env
+            echo "MAIL_FROM_NAME=\"\${APP_NAME}\"" >> .env
+        fi
+    done
 fi

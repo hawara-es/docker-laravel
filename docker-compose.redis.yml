@@ -2,6 +2,16 @@ version: '3'
 services:
     redis:
         image: 'redis:7.0'
+        command:
+            # @see https://stackoverflow.com/a/72593084/2940632
+            - /bin/sh
+            - -c
+            # - Double dollars, so that the variable is not expanded by Docker Compose
+            # - Surround by quotes, so that the shell does not split the password
+            # - The ${variable:?message} syntax causes shell to exit with a non-zero
+            #   code and print a message, when the variable is not set or empty
+            - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+        env_file: .env
         ports:
             - 6379:6379
         volumes:
