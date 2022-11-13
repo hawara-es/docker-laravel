@@ -1,4 +1,4 @@
-FROM alpine as prod
+FROM alpine:3.16 as prod
 
 #
 # Valid options for **install_method** are:

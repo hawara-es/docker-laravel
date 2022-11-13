@@ -1,0 +1,27 @@
+version: '3'
+services:
+    php:
+        depends_on:
+            - mariadb
+    mariadb:
+        environment:
+            MARIADB_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
+            MARIADB_DATABASE: '${DB_DATABASE}'
+            MARIADB_USER: '${DB_USERNAME}'
+            MARIADB_PASSWORD: '${DB_PASSWORD}'
+        healthcheck:
+            retries: 3
+            test: mysqladmin ping -u$$DB_USERNAME -p$$DB_PASSWORD
+            timeout: 3s
+        image: mariadb:10.8
+        restart: always
+        volumes:
+            - mariadb:/var/lib/mysql
+        networks:
+            - laravel
+networks:
+    laravel:
+        driver: bridge
+volumes:
+    mariadb:
+        driver: local
