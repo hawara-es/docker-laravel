@@ -47,7 +47,7 @@ COPY php-fpm/www.conf /etc/php81/php-fpm.d/www.conf
 
 RUN apk add --no-cache \
         tzdata fcgi openrc tini curl icu-data-full lynx \
-        php81 php81-fpm \
+        php81 php81-fpm php81-pecl-memcached \
         php81-posix php81-zlib php81-curl php81-opcache php81-tokenizer \
         php81-phar php81-gd php81-iconv php81-mbstring \
         php81-mysqli php81-mysqlnd php81-pdo_mysql \
