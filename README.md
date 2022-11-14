@@ -16,7 +16,7 @@ git clone git@github.com:hawara-es/docker-laravel.git
 git clone https://github.com/hawara-es/docker-laravel.git
 ```
 
-### Customize
+### Choose Services
 
 Once you have the repository, use the `create-environment` script to create:
 
@@ -26,6 +26,7 @@ Once you have the repository, use the `create-environment` script to create:
 Call the script by running `./create-environment` from the terminal followed by the names of the services separated by spaces.
 
 ```bash
+# cd docker-laravel/
 ./create-environment mysql
 ```
 
@@ -69,56 +70,14 @@ Now you should have a custom `docker-laravel` script that will help you when int
 When calling `build` one of the first things you want to do is to set the server TIMEZONE. Use the `TIMEZONE` build argument for that. Valid values are the ones accepted in `php.ini` files.
 
 ```bash
-./docker-laravel build \
-    --build-arg TIMEZONE=Europe/Madrid
+./docker-laravel build --build-arg TIMEZONE=Europe/Madrid
 ```
 
 In the next examples, the timezone argument will be excluded for simplicity. Remember adding it to your custom build command.
 
-#### Install from Composer
+#### Install the Application
 
-By calling `build` without arguments, your infrastructure will be created over an empty application folder. Don't worry, that's what we call a manual installation.
-
-If you want to install a new Laravel instance, consider calling the build process with `INSTALL_METHOD` set to **composer** and `INSTALL_SOURCE` set to **laravel/laravel**.
-
-```bash
-./docker-laravel build \
-    --build-arg INSTALL_METHOD=composer \
-    --build-arg INSTALL_SOURCE=laravel/laravel
-```
-
-You can change `laravel/laravel` to be the source of your custom Laravel application. Just check that it's a publicly available Composer package.
-
-#### Install from a Custom Composer Repository
-
-If your application is a Composer package but it isn't in Packagist, use the **composer_repo** installation method instead. In this case, the `INSTALL_SOURCE` is taken as a repository URL.
-
-```bash
-./docker-laravel build \
-    --build-arg INSTALL_METHOD=composer_repo \
-    --build-arg INSTALL_SOURCE=https://github.com/laravel/laravel
-```
-
-#### Install from a Custom Git Repository
-
-Alternativelly, you can tell the installer to use the **git** installation method. By doing so, the application specified in `INSTALL_SOURCE` would be installed.
-
-```bash
-./docker-laravel build \
-    --build-arg INSTALL_METHOD=git \
-    --build-arg INSTALL_SOURCE=https://github.com/laravel/laravel
-```
-
-#### Manuall Install
-
-Ultimately, you can delay the installation to make it happen manually by using the `manual` installation method.
-
-```bash
-./docker-laravel build \
-    --build-arg INSTALL_METHOD=manual
-```
-
-Make sure to place your application so it has a `public` folder, as the web server is configured to publish it. At this point, to continue with the installation, we'll start the containers.
+First, let's start the containers.
 
 ```bash
 ./docker-laravel up -d
@@ -140,14 +99,6 @@ cp -R download/* . && rm -rf download/
 
 # 4) Generate the application keys
 ./artisan key:generate
-```
-
-### Start the Services
-
-If you are following this guide but you are not doing a manual installation, you may want to start your containers. That will make your application available.
-
-```bash
-./docker-laravel up -d
 ```
 
 ### Check the Services

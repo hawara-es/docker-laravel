@@ -32,7 +32,7 @@ else
     echo "APP_URL=http://localhost" > .env
     echo "APP_KEY=" >> .env
     echo "" >> .env
-    echo "BASIC_AUTH_USERNAME=" >> .env
+    echo "BASIC_AUTH_USERNAME=laravel" >> .env
     echo "BASIC_AUTH_PASSWORD=`generate_random_password`" >> .env
     echo "" >> .env
     echo "DB_DATABASE=laravel" >> .env

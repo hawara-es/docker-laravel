@@ -1,10 +1,5 @@
 FROM alpine:3.16 as prod
 
-ARG INSTALL_METHOD=manual
-ARG INSTALL_SOURCE
-ARG INSTALL_SOURCE_REPO
-ARG INSTALL_FROM_GIT
-
 ARG TIMEZONE
 
 ENV USER=laravel
@@ -37,10 +32,9 @@ RUN apk add --no-cache \
     /opt/remove-unnecessary-files
 
 ## Set the system and PHP time zones
-ENV TZ=$TIMEZONE
-RUN ln -s /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/TIMEZONE
+RUN ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime && echo $TIMEZONE > /etc/TIMEZONE
 RUN echo "[PHP]" > /etc/php81/conf.d/tzone.ini && \
-    echo "date.TIMEZONE = \"$TZ\"" >> /etc/php81/conf.d/tzone.ini
+    echo "date.TIMEZONE = \"$TIMEZONE\"" >> /etc/php81/conf.d/tzone.ini
 
 ## Composer
 RUN curl -sS https://getcomposer.org/installer | \
@@ -53,20 +47,6 @@ RUN apk add --no-cache nodejs npm && \
 ## Git
 RUN apk add --no-cache git && \
     /opt/remove-unnecessary-files
-
-## Application
-USER $USER
-
-RUN if [ "$INSTALL_METHOD" = "composer" ]; then \
-    composer create-project $INSTALL_SOURCE .; fi
-
-RUN if [ "$INSTALL_METHOD" = "composer_repo" ]; then \
-    composer create-project --repository-url $INSTALL_SOURCE_REPO .; fi
-
-RUN if [ "$INSTALL_METHOD" = "git" ]; then \
-    git clone $INSTALL_FROM_GIT .; fi
-
-USER root
 
 ## FPM Health Check
 RUN wget -O /usr/local/bin/php-fpm-healthcheck \
@@ -101,10 +81,15 @@ RUN curl -O https://download.microsoft.com/download/b/9/f/b9f3cce4-3925-46d4-9f4
 FROM prod as supervisor
 
 ## Supervisor
+USER laravel
+
+RUN touch /home/laravel/supervisor.log
+
+USER root
+
 WORKDIR /etc/supervisor/conf.d
 COPY supervisor/supervisor.conf /etc/supervisor/supervisord.conf
 COPY supervisor/watchdog.py /opt/supervisor/watchdog.py
-RUN ln -s /dev/stdout /var/www/html/supervisor.log
 RUN apk add --no-cache supervisor && \
     /opt/remove-unnecessary-files
 

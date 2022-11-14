@@ -5,6 +5,8 @@ services:
             context: ./docker-images/alpine
             dockerfile: Dockerfile
             target: supervisor
+            args:
+                TIMEZONE: ${APP_TIMEZONE}
         restart: always
         stdin_open: true
         tty: true

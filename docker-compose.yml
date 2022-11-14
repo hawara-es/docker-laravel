@@ -6,8 +6,6 @@ services:
             dockerfile: Dockerfile
             target: prod
             args:
-                INSTALL_METHOD: ${INSTALL_METHOD}
-                INSTALL_SOURCE: ${INSTALL_SOURCE}
                 TIMEZONE: ${APP_TIMEZONE}
         entrypoint: ["php-fpm", "-R", "-F"]
         env_file: .env
@@ -30,7 +28,6 @@ services:
             dockerfile: Dockerfile
             target: cron
             args:
-                INSTALL_METHOD: manual
                 TIMEZONE: ${APP_TIMEZONE}
         env_file: .env
         networks:
