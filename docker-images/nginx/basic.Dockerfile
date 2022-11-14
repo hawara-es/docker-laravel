@@ -1,10 +1,12 @@
 FROM nginx:1.22-alpine
 
-ENV NGINXUSER=laravel
-ENV NGINXGROUP=laravel
+ENV USER=laravel
+ENV GROUP=laravel
+RUN adduser -g ${GROUP} -s /bin/sh -D ${USER}
 
 # Create the webroot folder
 RUN mkdir -p /var/www/html/public
+RUN chown -R ${USER}:${GROUP} /var/www/html
 
 # Copy the nginx configuration file
 RUN mkdir /etc/nginx/conf.templates
@@ -16,7 +18,5 @@ RUN rm /etc/nginx/conf.d/default.conf
 RUN ln -s /etc/nginx/conf.templates/basic.conf \
   /etc/nginx/conf.d/basic.conf
 
-# Tell nginx to use our $NGINXUSER rather than www-data
-RUN sed -i "s/user www-data/user ${NGINXUSER}/g" /etc/nginx/nginx.conf
-RUN adduser -g ${NGINXGROUP} -s /bin/sh -D ${NGINXUSER}
-RUN chown ${NGINXUSER}:${NGINXGROUP} /var/www/html/public
+# Tell nginx to use our laravel user rather than www-data
+RUN sed -i "s/user www-data/user ${USER}/g" /etc/nginx/nginx.conf

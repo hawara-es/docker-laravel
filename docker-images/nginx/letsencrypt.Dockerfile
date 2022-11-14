@@ -1,15 +1,10 @@
 FROM nginx:1.22-alpine
 
-RUN apk add certbot certbot-nginx
-
 ARG LETSENCRYPT_DOMAIN
 ENV LETSENCRYPT_DOMAIN=${LETSENCRYPT_DOMAIN}
 
 ARG LETSENCRYPT_EMAIL
 ENV LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-
-ENV NGINXUSER=laravel
-ENV NGINXGROUP=laravel
 
 # Set LETSENCRYPT_DOMAIN and LETSENCRYPT_EMAIL as a mandatory build arguments
 RUN test -n "$LETSENCRYPT_DOMAIN" || \
@@ -17,8 +12,15 @@ RUN test -n "$LETSENCRYPT_DOMAIN" || \
 RUN test -n "$LETSENCRYPT_EMAIL" || \
   (echo "You must set the LETSENCRYPT_EMAIL build argument" && false)
 
+RUN apk add certbot certbot-nginx
+
+ENV USER=laravel
+ENV GROUP=laravel
+RUN adduser -g ${GROUP} -s /bin/sh -D ${USER}
+
 # Create the webroot folder
 RUN mkdir -p /var/www/html/public
+RUN chown -R ${USER}:${GROUP} /var/www/html
 
 # Copy the nginx configuration files
 RUN mkdir /etc/nginx/conf.templates
@@ -42,7 +44,5 @@ RUN envsubst \$LETSENCRYPT_DOMAIN \
   < /etc/nginx/conf.templates/letsencrypt.template.conf \
   > /etc/nginx/conf.templates/letsencrypt.conf
 
-# Tell nginx to use our $NGINXUSER rather than www-data
+# Tell nginx to use our laravel user rather than www-data
 RUN sed -i "s/user www-data/user ${NGINXUSER}/g" /etc/nginx/nginx.conf
-RUN adduser -g ${NGINXGROUP} -s /bin/sh -D ${NGINXUSER}
-RUN chown ${NGINXUSER}:${NGINXGROUP} /var/www/html/public
