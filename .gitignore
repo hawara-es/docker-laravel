@@ -1,5 +1,6 @@
 /.env
 /docker-laravel
+/docker-compose.custom-*.yml
 
 /volumes/application/*
 !/volumes/application/.gitkeep
