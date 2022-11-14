@@ -11,7 +11,7 @@ services:
             MARIADB_PASSWORD: '${DB_PASSWORD}'
         healthcheck:
             retries: 3
-            test: mysqladmin ping -u$$DB_USERNAME -p$$DB_PASSWORD
+            test: mysqladmin ping -u$$MARIADB_USER -p$$MARIADB_PASSWORD
             timeout: 3s
         image: mariadb:10.8
         restart: always
