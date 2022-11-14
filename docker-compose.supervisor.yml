@@ -20,6 +20,7 @@ services:
             MEMORY_LIMIT: "1024"
         volumes:
             - laravel:/var/www/html
+            - ./.env:/var/www/html/.env
         networks:
             - laravel
 networks:

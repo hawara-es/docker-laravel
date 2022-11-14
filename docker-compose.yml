@@ -20,6 +20,7 @@ services:
         tty: true
         volumes:
             - laravel:/var/www/html
+            - ./.env:/var/www/html/.env
             - ./volumes/shared:/shared
         working_dir: /var/www/html
     cron:
@@ -37,6 +38,7 @@ services:
         tty: true
         volumes:
             - laravel:/var/www/html
+            - ./.env:/var/www/html/.env
             - ./volumes/shared:/shared
         working_dir: /var/www/html
     nginx:
