@@ -69,6 +69,17 @@ Now you should have a custom `docker-laravel` script that will help you when int
 ./docker-laravel build
 ```
 
+#### Set the Timezone
+
+When calling `build` one of the first things you want to do is to set the server timezone. Use the `timezone` build argument for that. Valid values are the ones accepted in `php.ini` files.
+
+```bash
+./docker-laravel build \
+    --build-arg timezone=Europe/Madrid
+```
+
+In the next examples, the timezone will be excluded for simplicity. But remember adding it to your custom build command.
+
 #### Install from Composer
 
 By calling `build` without arguments, a new Laravel application will be installed using Composer in your webroot.
