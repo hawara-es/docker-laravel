@@ -1,34 +1,11 @@
 FROM alpine:3.16 as prod
 
-#
-# Valid options for **install_method** are:
-#
-# - composer
-# - composer-repo
-# - git
-#
-# When using the:
-#
-# **composer** method, the application
-#   will be installed from **install_from_composer** using
-#   a `composer --create-project` command.
-#
-# **composer-repo** method, the application
-#   will be installed from **install_from_composer_repo** using
-#   a `composer --create-project` command with a custom
-#   `--repository-url`.
-#
-# **git** method, the application
-#   will be downloaded from **install_from_git** using
-#   a `git clone` command.
-#
+ARG INSTALL_METHOD=manual
+ARG INSTALL_SOURCE
+ARG INSTALL_SOURCE_REPO
+ARG INSTALL_FROM_GIT
 
-ARG install_method=composer
-ARG install_from_composer=laravel/laravel
-ARG install_from_composer_repo
-ARG install_from_git
-
-ARG timezone=Atlantic/Canary
+ARG TIMEZONE
 
 ENV USER=laravel
 ENV GROUP=laravel
@@ -60,10 +37,10 @@ RUN apk add --no-cache \
     /opt/remove-unnecessary-files
 
 ## Set the system and PHP time zones
-ENV TZ=$timezone
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV TZ=$TIMEZONE
+RUN ln -s /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/TIMEZONE
 RUN echo "[PHP]" > /etc/php81/conf.d/tzone.ini && \
-    echo "date.timezone = \"$TZ\"" >> /etc/php81/conf.d/tzone.ini
+    echo "date.TIMEZONE = \"$TZ\"" >> /etc/php81/conf.d/tzone.ini
 
 ## Composer
 RUN curl -sS https://getcomposer.org/installer | \
@@ -80,14 +57,14 @@ RUN apk add --no-cache git && \
 ## Application
 USER $USER
 
-RUN if [ "$install_method" = "composer" ]; then \
-    composer create-project $install_from_composer .; fi
+RUN if [ "$INSTALL_METHOD" = "composer" ]; then \
+    composer create-project $INSTALL_SOURCE .; fi
 
-RUN if [ "$install_method" = "composer_repo" ]; then \
-    composer create-project --repository-url $install_from_composer_repo .; fi
+RUN if [ "$INSTALL_METHOD" = "composer_repo" ]; then \
+    composer create-project --repository-url $INSTALL_SOURCE_REPO .; fi
 
-RUN if [ "$install_method" = "git" ]; then \
-    git clone $install_from_git .; fi
+RUN if [ "$INSTALL_METHOD" = "git" ]; then \
+    git clone $INSTALL_FROM_GIT .; fi
 
 USER root
 
@@ -127,6 +104,7 @@ FROM prod as supervisor
 WORKDIR /etc/supervisor/conf.d
 COPY supervisor/supervisor.conf /etc/supervisor/supervisord.conf
 COPY supervisor/watchdog.py /opt/supervisor/watchdog.py
+RUN ln -s /dev/stdout /var/www/html/supervisor.log
 RUN apk add --no-cache supervisor && \
     /opt/remove-unnecessary-files
 

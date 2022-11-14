@@ -2,8 +2,8 @@
 /docker-laravel
 /docker-compose.custom-*.yml
 
-/volumes/application/*
-!/volumes/application/.gitkeep
+/volumes/shared/*
+!/volumes/shared/.gitkeep
 
 /volumes/letsencrypt/*
 !/volumes/letsencrypt/.gitkeep

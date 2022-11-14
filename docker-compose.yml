@@ -5,6 +5,10 @@ services:
             context: ./docker-images/alpine
             dockerfile: Dockerfile
             target: prod
+            args:
+                INSTALL_METHOD: ${INSTALL_METHOD}
+                INSTALL_SOURCE: ${INSTALL_SOURCE}
+                TIMEZONE: ${APP_TIMEZONE}
         entrypoint: ["php-fpm", "-R", "-F"]
         env_file: .env
         healthcheck:
@@ -18,13 +22,17 @@ services:
         tty: true
         volumes:
             - laravel:/var/www/html
-            - ./.env:/var/www/html/.env
+            - ./volumes/shared:/shared
         working_dir: /var/www/html
     cron:
         build:
             context: ./docker-images/alpine
             dockerfile: Dockerfile
             target: cron
+            args:
+                INSTALL_METHOD: manual
+                TIMEZONE: ${APP_TIMEZONE}
+        env_file: .env
         networks:
             - laravel
         restart: always
@@ -32,6 +40,7 @@ services:
         tty: true
         volumes:
             - laravel:/var/www/html
+            - ./volumes/shared:/shared
         working_dir: /var/www/html
     nginx:
         build:
@@ -44,6 +53,8 @@ services:
             retries: 3
             test: curl -f $$APP_URL -u $$BASIC_AUTH_USERNAME:$$BASIC_AUTH_PASSWORD || exit 1
             timeout: 3s
+        links:
+            - php
         networks:
             - laravel
         ports:

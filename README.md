@@ -41,11 +41,6 @@ Also, this features are available:
 - `dev`: enables XDebug and opens MySQL port to the host,
 - `mailhog`: enables a MailHog email catcher,
 
-Finally, you can choose how your volumes will be handled:
-
-- `volume-on-container`: keeps the volumes in the containers,
-- `volume-on-host`: uses volumes shared with the host.
-
 #### Service Versions
 
 | Service | Version |
@@ -71,47 +66,47 @@ Now you should have a custom `docker-laravel` script that will help you when int
 
 #### Set the Timezone
 
-When calling `build` one of the first things you want to do is to set the server timezone. Use the `timezone` build argument for that. Valid values are the ones accepted in `php.ini` files.
+When calling `build` one of the first things you want to do is to set the server TIMEZONE. Use the `TIMEZONE` build argument for that. Valid values are the ones accepted in `php.ini` files.
 
 ```bash
 ./docker-laravel build \
-    --build-arg timezone=Europe/Madrid
+    --build-arg TIMEZONE=Europe/Madrid
 ```
 
-In the next examples, the timezone will be excluded for simplicity. But remember adding it to your custom build command.
+In the next examples, the timezone argument will be excluded for simplicity. Remember adding it to your custom build command.
 
 #### Install from Composer
 
-By calling `build` without arguments, a new Laravel application will be installed using Composer in your webroot.
+By calling `build` without arguments, your infrastructure will be created over an empty application folder. Don't worry, that's what we call a manual installation.
 
-In other words, the build process would be executed as if `install_method` was set to **composer** and `install_from_composer` was set to **laravel/laravel**.
+If you want to install a new Laravel instance, consider calling the build process with `INSTALL_METHOD` set to **composer** and `INSTALL_SOURCE` set to **laravel/laravel**.
 
 ```bash
 ./docker-laravel build \
-    --build-arg install_method=composer \
-    --build-arg install_from_composer=laravel/laravel
+    --build-arg INSTALL_METHOD=composer \
+    --build-arg INSTALL_SOURCE=laravel/laravel
 ```
 
 You can change `laravel/laravel` to be the source of your custom Laravel application. Just check that it's a publicly available Composer package.
 
 #### Install from a Custom Composer Repository
 
-If your application is a Composer package but it isn't in Packagist, use the **composer_repo** installation method instead. Also, use `install_from_composer_repo` to tell Docker where are your sources.
+If your application is a Composer package but it isn't in Packagist, use the **composer_repo** installation method instead. In this case, the `INSTALL_SOURCE` is taken as a repository URL.
 
 ```bash
 ./docker-laravel build \
-    --build-arg install_method=composer_repo \
-    --build-arg install_from_composer_repo=https://github.com/laravel/laravel
+    --build-arg INSTALL_METHOD=composer_repo \
+    --build-arg INSTALL_SOURCE=https://github.com/laravel/laravel
 ```
 
 #### Install from a Custom Git Repository
 
-Alternativelly, you can tell the installer to use the **git** installation method. By doing so, the application specified in `install_from_git` would be installed.
+Alternativelly, you can tell the installer to use the **git** installation method. By doing so, the application specified in `INSTALL_SOURCE` would be installed.
 
 ```bash
 ./docker-laravel build \
-    --build-arg install_method=git \
-    --build-arg install_from_git=https://github.com/laravel/laravel
+    --build-arg INSTALL_METHOD=git \
+    --build-arg INSTALL_SOURCE=https://github.com/laravel/laravel
 ```
 
 #### Manuall Install
@@ -120,10 +115,8 @@ Ultimately, you can delay the installation to make it happen manually by using t
 
 ```bash
 ./docker-laravel build \
-    --build-arg install_method=manual
+    --build-arg INSTALL_METHOD=manual
 ```
-
-If you do so, you will very likely want to use the `volume-on-host` service when creating your environment. That will mount the `volumes/application` folder as your container's web root.
 
 Make sure to place your application so it has a `public` folder, as the web server is configured to publish it. At this point, to continue with the installation, we'll start the containers.
 

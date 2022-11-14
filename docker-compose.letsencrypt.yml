@@ -5,11 +5,9 @@ services:
             context: ./docker-images/nginx
             dockerfile: letsencrypt.Dockerfile
             args:
-                letsencrypt_domain: '${LETSENCRYPT_DOMAIN}'
-                letsencrypt_email: '${LETSENCRYPT_EMAIL}'
+                LETSENCRYPT_DOMAIN: '${LETSENCRYPT_DOMAIN}'
+                LETSENCRYPT_EMAIL: '${LETSENCRYPT_EMAIL}'
         ports:
-            - 80:80
             - 443:443
         volumes:
-            - ./:/var/www/html
             - ./volume/letsencrypt/:/etc/letsencrypt/

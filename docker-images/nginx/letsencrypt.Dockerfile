@@ -2,20 +2,20 @@ FROM nginx:1.22-alpine
 
 RUN apk add certbot certbot-nginx
 
-ARG letsencrypt_domain
-ENV LETSENCRYPT_DOMAIN=${letsencrypt_domain}
+ARG LETSENCRYPT_DOMAIN
+ENV LETSENCRYPT_DOMAIN=${LETSENCRYPT_DOMAIN}
 
-ARG letsencrypt_email
-ENV LETSENCRYPT_EMAIL=${letsencrypt_email}
+ARG LETSENCRYPT_EMAIL
+ENV LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
 
 ENV NGINXUSER=laravel
 ENV NGINXGROUP=laravel
 
-# Set letsencrypt_domain and letsencrypt_email as a mandatory build arguments
+# Set LETSENCRYPT_DOMAIN and LETSENCRYPT_EMAIL as a mandatory build arguments
 RUN test -n "$LETSENCRYPT_DOMAIN" || \
-  (echo "You must set the letsencrypt_domain build argument" && false)
+  (echo "You must set the LETSENCRYPT_DOMAIN build argument" && false)
 RUN test -n "$LETSENCRYPT_EMAIL" || \
-  (echo "You must set the letsencrypt_email build argument" && false)
+  (echo "You must set the LETSENCRYPT_EMAIL build argument" && false)
 
 # Create the webroot folder
 RUN mkdir -p /var/www/html/public

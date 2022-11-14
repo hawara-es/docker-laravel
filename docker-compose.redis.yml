@@ -1,5 +1,8 @@
 version: '3'
 services:
+    php:
+        depends_on:
+            - redis
     redis:
         image: 'redis:7.0'
         command:
@@ -11,7 +14,10 @@ services:
             # - The ${variable:?message} syntax causes shell to exit with a non-zero
             #   code and print a message, when the variable is not set or empty
             - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
-        env_file: .env
+        environment:
+            REDIS_HOST:
+            REDIS_PASSWORD:
+            REDIS_PORT:
         ports:
             - 6379:6379
         volumes:

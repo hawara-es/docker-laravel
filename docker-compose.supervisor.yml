@@ -6,14 +6,18 @@ services:
             dockerfile: Dockerfile
             target: supervisor
         restart: always
+        stdin_open: true
         tty: true
         entrypoint: ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/supervisord.conf"]
         environment:
+            REDIS_HOST:
+            REDIS_PASSWORD:
+            REDIS_PORT:
             QUEUE_CONNECTION:
             QUEUE_NAME:
             MEMORY_LIMIT: "1024"
         volumes:
-            - ./:/var/www/html
+            - laravel:/var/www/html
         networks:
             - laravel
 networks:

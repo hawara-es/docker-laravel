@@ -18,16 +18,9 @@ else
     echo "#!/usr/bin/env sh" > docker-laravel
     echo "docker-compose -f docker-compose.yml \\" >> docker-laravel
 
-    case "$services" in
-        *"volume-on-host"*) add_service "volume-on-host" ;;
-        *) add_service "volume-on-container" ;;
-    esac
-
     for service in $services
     do
-        if [ ! "$service" = "volume-on-host" ] && [ ! "$service" = "volume-on-container" ]; then
-            add_service $service
-        fi
+        add_service $service
     done
 
     echo "\"\$@\"" >> docker-laravel
@@ -52,6 +45,7 @@ else
         if [ "$service" = "redis" ]; then
             echo "" >> .env
             echo "QUEUE_CONNECTION=redis" >> .env
+            echo "QUEUE_NAME=default" >> .env
             echo "REDIS_HOST=redis" >> .env
             echo "REDIS_PASSWORD=`generate_random_password`" >> .env
             echo "REDIS_PORT=6379" >> .env
