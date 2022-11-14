@@ -39,9 +39,10 @@ services:
             dockerfile: basic.Dockerfile
         depends_on:
             - php
+        env_file: .env
         healthcheck:
             retries: 3
-            test: curl -f ${APP_URL} -u ${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD} || exit 1
+            test: curl -f $$APP_URL -u $$BASIC_AUTH_USERNAME:$$BASIC_AUTH_PASSWORD || exit 1
             timeout: 3s
         networks:
             - laravel
