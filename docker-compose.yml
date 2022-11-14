@@ -6,6 +6,7 @@ services:
             dockerfile: Dockerfile
             target: prod
         entrypoint: ["php-fpm", "-R", "-F"]
+        env_file: .env
         healthcheck:
             retries: 3
             test: php-fpm-healthcheck || exit 1
