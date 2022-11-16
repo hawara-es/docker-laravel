@@ -27,13 +27,14 @@ Call the script by running `./create-environment` from the terminal followed by 
 
 ```bash
 # cd docker-laravel/
-./create-environment mysql
+./create-environment mariadb redis
 ```
 
 Available services are:
 
 - `letsencrypt`: installs Let's Encrypt `certbot` utility to facilitate serving the application through HTTPS,
 - `mysql`: runs a MySQL database server,
+- `mariadb`: runs a MariaDB database server,
 - `redis`: runs a Redis server,
 - `supervisor`: runs a Supervisor instance checking Laravel's queues.
 
@@ -109,8 +110,15 @@ This repository implements health checks for MySQL, Nginx and PHP FPM. If you ru
 ./docker-laravel ps
 ```
 
-![List of for containers Cron, MySQL, Nginx and PHP running in a healthy state](./docker-images/containers_screenshot.png)
-
+```
+          Name                        Command                  State                        Ports
+-------------------------------------------------------------------------------------------------------------------
+docker-laravel_core_1      php-fpm -R -F                    Up (healthy)
+docker-laravel_cron_1      crond -l 2 -f                    Up
+docker-laravel_mariadb_1   docker-entrypoint.sh mariadbd    Up (healthy)   3306/tcp
+docker-laravel_nginx_1     /docker-entrypoint.sh ngin ...   Up (healthy)   0.0.0.0:80->80/tcp,:::80->80/tcp
+docker-laravel_redis_1     docker-entrypoint.sh /bin/ ...   Up (healthy)   0.0.0.0:6379->6379/tcp,:::6379->6379/tcp
+```
 ## How to Use
 
 ### Run `artisan` Commands

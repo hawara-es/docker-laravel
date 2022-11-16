@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 if [ -f "docker-laravel" ]; then
-    ./docker-laravel exec -u laravel php composer "$@"
+    ./docker-laravel exec -u laravel core composer "$@"
 fi

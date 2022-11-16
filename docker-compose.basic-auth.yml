@@ -1,0 +1,5 @@
+version: '3'
+services:
+    nginx:
+        healthcheck:
+            test: curl -f http://nginx -u $$BASIC_AUTH_USERNAME:$$BASIC_AUTH_PASSWORD || exit 1

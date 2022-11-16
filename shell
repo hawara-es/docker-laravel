@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 if [ -f "docker-laravel" ]; then
-    if [ "$1" = "php" ] || [ "$1" = "nginx" ]; then
+    if [ "$1" = "core" ] || [ "$1" = "cron" ] || [ "$1" = "nginx" ]; then
         ./docker-laravel exec -u laravel $1 sh
     else
         ./docker-laravel exec $1 sh

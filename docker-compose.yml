@@ -1,6 +1,6 @@
 version: '3'
 services:
-    php:
+    core:
         build:
             context: ./docker-images/alpine
             dockerfile: Dockerfile
@@ -46,14 +46,14 @@ services:
             context: ./docker-images/nginx
             dockerfile: basic.Dockerfile
         depends_on:
-            - php
+            - core
         env_file: .env
         healthcheck:
             retries: 3
-            test: curl -f $$APP_URL -u $$BASIC_AUTH_USERNAME:$$BASIC_AUTH_PASSWORD || exit 1
+            test: curl -f http://nginx || exit 1
             timeout: 3s
         links:
-            - php
+            - core
         networks:
             - laravel
         ports:
@@ -61,6 +61,8 @@ services:
         restart: always
         volumes:
             - laravel:/var/www/html
+            - ./.env:/var/www/html/.env
+            - ./volumes/shared:/shared
         working_dir: /var/www/html
 networks:
     laravel:

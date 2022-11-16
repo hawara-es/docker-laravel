@@ -45,7 +45,7 @@ RUN apk add --no-cache nodejs npm && \
     /opt/remove-unnecessary-files
 
 ## Git
-RUN apk add --no-cache git && \
+RUN apk add --no-cache git openssh && \
     /opt/remove-unnecessary-files
 
 ## FPM Health Check

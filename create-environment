@@ -31,17 +31,15 @@ else
 
     echo "APP_URL=http://localhost" > .env
     echo "APP_KEY=" >> .env
-    echo "" >> .env
-    echo "BASIC_AUTH_USERNAME=laravel" >> .env
-    echo "BASIC_AUTH_PASSWORD=`generate_random_password`" >> .env
-    echo "" >> .env
-    echo "DB_DATABASE=laravel" >> .env
-    echo "DB_USERNAME=laravel" >> .env
-    echo "DB_PASSWORD=`generate_random_password`" >> .env
-    echo "DB_ROOT_PASSWORD=`generate_random_password`" >> .env
 
     for service in $services
     do
+        if [ "$service" = "basic-auth" ]; then
+            echo "" >> .env
+            echo "BASIC_AUTH_USERNAME=laravel" >> .env
+            echo "BASIC_AUTH_PASSWORD=`generate_random_password`" >> .env
+        fi
+
         if [ "$service" = "redis" ]; then
             echo "" >> .env
             echo "QUEUE_CONNECTION=redis" >> .env
@@ -58,5 +56,15 @@ else
             echo "MAIL_PORT=1025" >> .env
             echo "MAIL_FROM_NAME=\"\${APP_NAME}\"" >> .env
         fi
+
+        if [ "$service" = "mariadb" ] || [ "$service" = "mysql" ]; then
+            echo "" >> .env
+            echo "DB_HOST=$service" >> .env
+        fi
     done
+
+    echo "DB_DATABASE=laravel" >> .env
+    echo "DB_USERNAME=laravel" >> .env
+    echo "DB_PASSWORD=`generate_random_password`" >> .env
+    echo "DB_ROOT_PASSWORD=`generate_random_password`" >> .env
 fi
