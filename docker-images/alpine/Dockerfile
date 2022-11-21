@@ -23,6 +23,7 @@ RUN apk add --no-cache \
         php81-posix php81-zlib php81-curl php81-opcache php81-tokenizer \
         php81-phar php81-gd php81-iconv php81-mbstring \
         php81-mysqli php81-mysqlnd php81-pdo_mysql \
+        mysql-client \
         php81-dba php81-pdo_dblib php81-pdo_odbc php81-sqlite3 \
         php81-pdo php81-intl php81-pcntl php81-redis \
         php81-dev php81-pear php81-openssl unixodbc-dev \
