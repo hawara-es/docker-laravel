@@ -22,6 +22,7 @@ services:
             - laravel:/var/www/html
             - ./.env:/var/www/html/.env
             - ./volumes/shared:/shared
+            - ./volumes/backups:/var/www/html/storage/backups
         working_dir: /var/www/html
     cron:
         build:

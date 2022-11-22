@@ -5,5 +5,8 @@
 /volumes/shared/*
 !/volumes/shared/.gitkeep
 
+/volumes/backups/*
+!/volumes/backups/.gitkeep
+
 /volumes/letsencrypt/*
 !/volumes/letsencrypt/.gitkeep
