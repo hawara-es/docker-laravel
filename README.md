@@ -92,8 +92,8 @@ As an example, let's install a clean new Laravel manually:
 # 1) Create the project in a new folder (here `download`)
 ./composer create-project laravel/laravel download/
 
-# 2) Open a shell in the PHP container
-./shell php
+# 2) Open a shell in the core container
+./shell core
 
 # 3) Move the files and leave things clean
 cp -R download/* . && rm -rf download/
@@ -142,8 +142,8 @@ Also, all `composer` commands can be called using the so-called helper.
 To administrate the containers, `shell` sessions can be created.
 
 ```bash
-# Open a shell in the `php` container
-./shell php
+# Open a shell in the `core` container
+./shell core
 
 # ... or in the `nginx` container
 ./shell nginx

@@ -31,6 +31,10 @@ else
 
     echo "APP_URL=http://localhost" > .env
     echo "APP_KEY=" >> .env
+    echo "APP_TIMEZONE=UTC" >> .env
+    echo "APP_LOCALE=en" >> .env
+    echo "APP_FALLBACK_LOCALE=en" >> .env
+    echo "APP_BACKUPS_FOLDER=/backups" >> .env
 
     for service in $services
     do
@@ -47,6 +51,7 @@ else
             echo "REDIS_HOST=redis" >> .env
             echo "REDIS_PASSWORD=`generate_random_password`" >> .env
             echo "REDIS_PORT=6379" >> .env
+            echo "CACHE_DRIVER=redis" >> .env
         fi
 
         if [ "$service" = "mailhog" ]; then

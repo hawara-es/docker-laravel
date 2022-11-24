@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+if [ -f "docker-laravel" ]; then
+    ./docker-laravel exec -u laravel core npm "$@"
+fi
