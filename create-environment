@@ -65,11 +65,10 @@ else
         if [ "$service" = "mariadb" ] || [ "$service" = "mysql" ]; then
             echo "" >> .env
             echo "DB_HOST=$service" >> .env
+            echo "DB_DATABASE=laravel" >> .env
+            echo "DB_USERNAME=laravel" >> .env
+            echo "DB_PASSWORD=`generate_random_password`" >> .env
+            echo "DB_ROOT_PASSWORD=`generate_random_password`" >> .env
         fi
     done
-
-    echo "DB_DATABASE=laravel" >> .env
-    echo "DB_USERNAME=laravel" >> .env
-    echo "DB_PASSWORD=`generate_random_password`" >> .env
-    echo "DB_ROOT_PASSWORD=`generate_random_password`" >> .env
 fi
