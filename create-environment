@@ -60,6 +60,9 @@ else
             echo "MAIL_HOST=mailhog" >> .env
             echo "MAIL_PORT=1025" >> .env
             echo "MAIL_FROM_NAME=\"\${APP_NAME}\"" >> .env
+            echo "MAIL_USERNAME=null" >> .env
+            echo "MAIL_PASSWORD=null" >> .env
+            echo "MAIL_ENCRYPTION=null" >> .env
         fi
 
         if [ "$service" = "mariadb" ] || [ "$service" = "mysql" ]; then
