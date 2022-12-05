@@ -2,6 +2,8 @@
 
 This repository implements Docker containers to facilitate the deployment of Laravel applications. It's goal is to be useful for creating both development and production environments.
 
+It is in early development and it's still not ready for usage. Please check the [1.x milestone](https://github.com/hawara-es/docker-laravel/milestone/1) for information about the road map.
+
 ## How to Install
 
 ### Download
