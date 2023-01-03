@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+if [ -f "docker-laravel" ]; then
+    removeEnvironmentFile="rm -f /var/www/html/.env"
+    linkEnvironmentFile="ln -s /home/laravel/.env /var/www/html/.env"
+
+    # core
+    ./docker-laravel exec -u laravel core $removeEnvironmentFile
+    ./docker-laravel exec -u laravel core $linkEnvironmentFile
+
+    # cron
+    ./docker-laravel exec -u laravel cron $removeEnvironmentFile
+    ./docker-laravel exec -u laravel cron $linkEnvironmentFile
+
+    # nginx
+    ./docker-laravel exec -u laravel nginx $removeEnvironmentFile
+    ./docker-laravel exec -u laravel nginx $linkEnvironmentFile
+fi

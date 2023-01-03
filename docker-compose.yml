@@ -20,7 +20,7 @@ services:
         tty: true
         volumes:
             - laravel:/var/www/html
-            - ./.env:/var/www/html/.env
+            - ./.env:/home/laravel/.env
             - ./volumes/shared:/shared
             - ./volumes/backups:/backups
         working_dir: /var/www/html
@@ -39,7 +39,7 @@ services:
         tty: true
         volumes:
             - laravel:/var/www/html
-            - ./.env:/var/www/html/.env
+            - ./.env:/home/laravel/.env
             - ./volumes/shared:/shared
         working_dir: /var/www/html
     nginx:
@@ -62,7 +62,7 @@ services:
         restart: always
         volumes:
             - laravel:/var/www/html
-            - ./.env:/var/www/html/.env
+            - ./.env:/home/laravel/.env
             - ./volumes/shared:/shared
         working_dir: /var/www/html
 networks:

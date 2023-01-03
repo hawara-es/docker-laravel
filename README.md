@@ -91,16 +91,13 @@ Temporarily, our web server container may report unhealthy. That's just because 
 As an example, let's install a clean new Laravel manually:
 
 ```sh
-# 1) Create the project in a new folder (here `download`)
-./composer create-project laravel/laravel download/
+# 1) Create a Laravel project in the web root
+./composer create-project laravel/laravel .
 
-# 2) Open a shell in the core container
-./shell core
+# 2) Link the `.env` file so its visible from the web root
+./link-dotenv
 
-# 3) Move the files and leave things clean
-cp -R download/* . && rm -rf download/
-
-# 4) Generate the application keys
+# 3) Generate the application keys
 ./artisan key:generate
 ```
 

@@ -19,7 +19,7 @@ ENV GROUP=laravel
 RUN adduser -g ${GROUP} -s /bin/sh -D ${USER}
 
 # Create the webroot folder
-RUN mkdir -p /var/www/html/public
+RUN mkdir -p /var/www/html
 RUN chown -R ${USER}:${GROUP} /var/www/html
 
 # Copy the nginx configuration files
